@@ -52,6 +52,10 @@ if !exists('g:lawrencium_record_start_in_working_buffer')
     let g:lawrencium_record_start_in_working_buffer = 0
 endif
 
+if !exists('g:lawrencium_hide_hg_output_buflist')
+    let g:lawrencium_hide_hg_output_buflist = 1
+endif
+
 " }}}
 
 " Utility {{{
@@ -370,6 +374,7 @@ endfunction
 
 " Runs a Mercurial command in the repo.
 function! s:HgRepo.RunCommand(command, ...) abort
+    echom a:command
     let l:all_args = [a:command] + a:000
     let l:hg_command = call(self['GetCommand'], l:all_args, self)
     call s:trace("Running Mercurial command: " . l:hg_command)
@@ -891,6 +896,9 @@ function! s:Hg(bang, ...) abort
         " Make it a temp buffer
         setlocal bufhidden=delete
         setlocal buftype=nofile
+        if g:lawrencium_hide_hg_output_buflist
+          setlocal nobuflisted
+        endif
 
         " Try to find a nice syntax to set given the current command.
         let l:command_name = s:GetHgCommandName(a:000)
@@ -904,6 +912,14 @@ function! s:Hg(bang, ...) abort
         " Just print out the output of the command.
         echo l:output
     endif
+endfunction
+
+function! s:Hgv(...)
+  call call ('s:Hg', [1] + a:000) " this syntax must be used to hand a:000 to 
+                                  " a sub function
+  wincmd L
+  vert res 50
+  se nonu
 endfunction
 
 " Include the generated HG usage file.
@@ -972,6 +988,7 @@ function! s:GetHgCommandName(args) abort
 endfunction
 
 call s:AddMainCommand("-bang -complete=customlist,s:CompleteHg -nargs=* Hg :call s:Hg(<bang>0, <f-args>)")
+call s:AddMainCommand("-complete=customlist,s:CompleteHg -nargs=* Hgv :call s:Hgv(<f-args>)")
 
 " }}}
 

@@ -72,6 +72,8 @@ All commands defined by |lawrencium| are local to each buffer.
                         try to set the file type according to the Mercurial
                         command that was run. See |lawrencium_hg_commands_file_types|.
 
+:Hgv {args}             Like :Hg!, but open the output in a vertical buffer
+
                                                 *:Hgcd*
 :Hgcd[!] {path}         |:cd| relative to the root of the repository.
 
@@ -556,6 +558,7 @@ g:lawrencium_auto_close_buffers
                         by `Hglog` will be deleted when the log window
                         disappears.
 
+g:
                                                 *lawrencium_status_win_split_above*
 g:lawrencium_status_win_split_above
                         If set to 1, |Hgstatus| will open in a split window
@@ -576,5 +579,10 @@ g:lawrencium_record_start_in_working_buffer
                         working directory buffer, instead of the recording
                         buffer.
                         Defaults to `0`.
+
+g:lawrencium_hide_hg_output_buflist
+                        If set to 1, the buffers created by Hg! and Hgv will
+                        not be shown in the buffer list. 
+                        Defaults to 1.
 
  vim:tw=78:et:ft=help:norl:
