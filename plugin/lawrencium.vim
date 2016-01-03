@@ -908,7 +908,7 @@ function! s:Hg(bang, ...) abort
                 execute 'setlocal ft=' . l:file_type
             endif
         endif
-    else
+      else
         " Just print out the output of the command.
         echo l:output
     endif
@@ -921,6 +921,19 @@ function! s:Hgv(...)
   vert res 50
   se nonu
 endfunction
+
+let s:lg_style_file = expand("<sfile>:h:h") . "/resources/hg_lg.style"
+let s:lg_log_command_args = ['log','-G','-l','20','--style', s:lg_style_file]
+
+function! s:Hglg(...)
+  call call ('s:Hg', [1] + s:lg_log_command_args + a:000)
+  setl ft=hglg
+endfunction 
+
+function! s:Hgvlg(...)
+  call call ('s:Hgv', s:lg_log_command_args + a:000)
+  setl ft=hglg
+endfunction 
 
 " Include the generated HG usage file.
 let s:usage_file = expand("<sfile>:h:h") . "/resources/hg_usage.vim"
@@ -989,6 +1002,8 @@ endfunction
 
 call s:AddMainCommand("-bang -complete=customlist,s:CompleteHg -nargs=* Hg :call s:Hg(<bang>0, <f-args>)")
 call s:AddMainCommand("-complete=customlist,s:CompleteHg -nargs=* Hgv :call s:Hgv(<f-args>)")
+call s:AddMainCommand("-complete=customlist,s:CompleteHg -nargs=* Hglg :call s:Hglg(<f-args>)")
+call s:AddMainCommand("-complete=customlist,s:CompleteHg -nargs=* Hgvlg :call s:Hgvlg(<f-args>)")
 
 " }}}
 
